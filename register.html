@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vlaskin Studio-register</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-left">
+            <div>
+                <h1>WELCOME<br>TO<br>VLASKIN STUDIO</h1>
+                <p>
+                    Створи свій акаунт та отримай доступ до повного функціоналу студії.
+                    Твоя музика починається тут!
+                </p>
+            </div>
+        </div>
+        <div class="auth-right">
+       <form class="form" action="php/register.php" method="POST">
+                <h2>Sign Up</h2>
+                <input type="text" class="input" placeholder="Username" required>
+                <input type="email" class="input" placeholder="Email" required>
+                <input type="password" class="input" placeholder="Password" required>
+                <input type="password" class="input" placeholder="Confirm password" required>
+                <button type="submit" class="btn-full">Create account</button>
+                <p>Вже маєш акаунт? <a href="login.html">Увійти</a></p>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

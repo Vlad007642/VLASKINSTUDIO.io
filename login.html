@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLASKIN Studio-login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nosifer&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+     <header class="site-header">
+    <div class="logo">VLASKIN STUDIO</div>
+
+    <nav class="top-menu">
+      <ul>
+        <li><a href="index.html">HOME</a></li>
+        <li><a href="about.html">ABOUT</a></li>
+        <li><a href="services.html">SERVICES</a></li>
+        <li><a href="player.html">PLAYER</a></li>
+        <li><a href="login.html" class="active">LOGIN</a></li>
+      </ul>
+    </nav>
+  </header>
+    <main class="auth-page">
+    <div class="auth-card glass-card">
+    <div class="auth-left">
+        <div>
+          <h1>WELCOME BACK<br>TO VLASKIN STUDIO</h1>
+          <p class="muted">
+            Увійди в свій акаунт та продовжуй роботу над треками, 
+            бронюй сесії й керуй своїми проєктами в одному місці.
+          </p>
+        </div>
+      </div>
+       <div class="auth-right">
+       <form class="form" action="php/login.php" method="POST">
+          <h2>Login</h2>
+          <p class="muted">Введи свої дані, щоб увійти в акаунт студії.</p>
+    
+          <input
+            class="input"
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+          >
+
+          <input
+            class="input"
+            type="password"
+            name="password"
+            placeholder="Пароль"
+            required
+          >
+
+          <button class="btn-full" type="submit">Увійти</button>
+
+          <p class="muted" style="font-size: 13px; margin-top: 4px;">
+            Ще не маєш акаунту?
+            <a href="register.html" style="color: var(--c1); text-decoration: underline;">
+              Зареєструватися
+            </a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </main>
+   <script>
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      alert('Логін поки що демо. Тут пізніше буде справжня авторизація 😉');
+    });
+  </script>
+</body>
+</html>

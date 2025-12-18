@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vlaskin Studio-player</title>
+     <link href="https://fonts.googleapis.com/css2?family=Nosifer&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./player.css">
+</head>
+<body>
+    <header>
+    <div class="logo">VLASKIN Studio</div>
+    <nav>
+      <ul>
+       <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="player.html">Player</a></li>
+        <li><a href="login.html">Login</a></li>
+      </ul>
+    </nav>
+  </header>
+  <section class="player-header">
+  <h2 class="section-title">OUR TRACKS</h2>
+  <p class="section-subtitle">
+    VLASKIN Studio — місце, де кожен звук має власну історію.<br>
+     Якщо ви ще вагаєтесь зробити запис у нашій студії — залишаємо для вас портфоліо з треками, створеними власноруч.
+  </p>
+  <div class="player-wrapper">
+  <div class="player-main">
+    <div class="cover-box">
+      <img id="cover-img" src="img/player img/" alt="cover">
+    </div>
+    <div class="track-info">
+      <div id="track-title" class="track-title">Грушечка</div>
+      <div id="track-artist" class="track-artist">RUTA</div>
+    </div>
+    <div class="progress">
+      <div class="time-row">
+        <span id="current-time">0:00</span>
+        <span id="duration">0:00</span>
+      </div>
+      <div class="bar-wrap" id="seek-bar">
+        <div class="bar-fill" id="bar-fill"></div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="ctrl-btn" id="prev-btn" title="Попередній трек">⏮</button>
+      <button class="ctrl-btn main" id="play-btn" title="Пуск / Пауза">▶</button>
+      <button class="ctrl-btn" id="next-btn" title="Наступний трек">⏭</button>
+    </div>
+  </div>
+  <div class="playlist-panel">
+    <div class="playlist-title">PLAYLIST</div>
+    <div class="playlist-list" id="playlist">
+    </div>
+  </div>
+</div>
+<div class="order-container glass-card">
+  <h2 class="order-title">Замовити запис у студії</h2>
+
+  <form class="order-form" action="php/order.php" method="POST">
+  
+    <div class="form-row">
+      <div class="form-field">
+        <label>Ім’я та прізвище</label>
+        <input type="text" name="full_name" placeholder="Наприклад: Владислав Кіндрат" required>
+      </div>
+
+      <div class="form-field">
+        <label>Номер телефону</label>
+        <input type="tel" name="phone" placeholder="+38 (0__) ___ __ __" required>
+      </div>
+    </div>
+
+  
+    <div class="form-field">
+      <label>Послуга</label>
+      <select name="service" required>
+        <option value="" disabled selected>Оберіть послугу</option>
+        <option value="vocal">Запис вокалу</option>
+        <option value="instrument">Запис інструментів</option>
+        <option value="mix">Трек під ключ</option>
+        <option value="master">Мастеринг</option>
+        <option value="rent">Оренда студії</option>
+         <option value="rent">Трек </option>
+      </select>
+    </div>
+
+    
+    <div class="form-field">
+      <label>Побажання щодо запису</label>
+      <textarea name="notes" placeholder="Опиши стиль, настрій, технічні побажання…" required></textarea>
+    </div>
+
+    <button class="order-btn" type="submit">Відправити заявку</button>
+  </form>
+</div>
+<script>
+ 
+  const tracks = [
+    {
+      title: "Грушечка",
+      artist:"RUTA",
+      src: "audio/RUTA  - Грушечка (OFFICIAL VIDEO 2024) - RUTA.mp3",
+      cover: "img/player img/Грушечка.jpg"
+    },
+    {
+      title: "МАНІФЕСТ",
+      artist:"TARABAROVA",
+      src: "audio/TARABAROVA - МАНІФЕСТ - TARABAROVA.mp3",
+      cover: "img/player img/Маніфест.jpg"
+    },
+    {
+      title: "Добре з тобою",
+      artist:"TARABAROVA",
+      src: "audio/TARABAROVA  - ДОБРЕ З ТОБОЮ - TARABAROVA.mp3",
+      cover: "img/player img/Добре з тобою.jpg"
+    },
+     {
+      title: "id",
+      artist:"Vlaskin",
+      src: "audio/id.mp3",
+      cover: "img/player img/id.jpg"
+    },
+    {
+      title: "BLVN",
+      artist:"bulletrain, skyfall beats",
+      src: "audio/bulletrain, skyfall beats - BLVN.mp3",
+      cover: "img/player img/blvn.jpg"
+    },
+  ];
+  
+
+  const coverImg = document.getElementById("cover-img");
+  const titleEl = document.getElementById("track-title");
+  const artistEl = document.getElementById("track-artist");
+  const playBtn = document.getElementById("play-btn");
+  const prevBtn = document.getElementById("prev-btn");
+  const nextBtn = document.getElementById("next-btn");
+  const playlistEl = document.getElementById("playlist");
+  const currentTimeEl = document.getElementById("current-time");
+  const durationEl = document.getElementById("duration");
+  const barFill = document.getElementById("bar-fill");
+  const seekBar = document.getElementById("seek-bar");
+
+  
+  let currentIndex = 0;
+  let isPlaying = false;
+  const audio = new Audio();
+  audio.preload = "metadata";
+
+
+  function formatTime(sec){
+    if(isNaN(sec)) return "0:00";
+    const m = Math.floor(sec/60);
+    const s = Math.floor(sec%60).toString().padStart(2,"0");
+    return `${m}:${s}`;
+  }
+
+  function buildPlaylist(){
+    playlistEl.innerHTML = "";
+    tracks.forEach((track, index) => {
+      const item = document.createElement("div");
+      item.className = "track-item";
+      item.dataset.index = index;
+
+      const thumb = document.createElement("div");
+      thumb.className = "track-thumb";
+      const img = document.createElement("img");
+      img.src = track.cover;
+      img.alt = track.title;
+      thumb.appendChild(img);
+
+      const meta = document.createElement("div");
+      meta.className = "track-meta";
+      const t = document.createElement("div");
+      t.className = "track-meta-title";
+      t.textContent = track.title;
+      const a = document.createElement("div");
+      a.className = "track-meta-artist";
+      a.textContent = track.artist;
+      meta.appendChild(t);
+      meta.appendChild(a);
+
+      item.appendChild(thumb);
+      item.appendChild(meta);
+      playlistEl.appendChild(item);
+    });
+  }
+
+  function updateActiveItem(){
+    document.querySelectorAll(".track-item").forEach(el => {
+      el.classList.toggle("active", Number(el.dataset.index) === currentIndex);
+    });
+  }
+
+  function loadTrack(index){
+    currentIndex = index;
+    const track = tracks[currentIndex];
+
+    audio.src = track.src;
+    coverImg.src = track.cover;
+    titleEl.textContent = track.title;
+    artistEl.textContent = track.artist;
+
+    updateActiveItem();
+    barFill.style.width = "0%";
+    currentTimeEl.textContent = "0:00";
+    durationEl.textContent = "0:00";
+
+    audio.addEventListener("loadedmetadata", () => {
+      durationEl.textContent = formatTime(audio.duration);
+    }, { once:true });
+
+    if(isPlaying){
+      audio.play().catch(err => {
+        console.error("Play failed:", err);
+        isPlaying = false;
+        playBtn.textContent = "▶";
+      });
+    }
+  }
+
+  function togglePlay(){
+    if(!isPlaying){
+      audio.play().then(() => {
+        isPlaying = true;
+        playBtn.textContent = "❚❚";
+      }).catch(err => console.error(err));
+    }else{
+      audio.pause();
+      isPlaying = false;
+      playBtn.textContent = "▶";
+    }
+  }
+
+  function playNext(){
+    let next = currentIndex + 1;
+    if(next >= tracks.length) next = 0;
+    loadTrack(next);
+  }
+
+  function playPrev(){
+    let prev = currentIndex - 1;
+    if(prev < 0) prev = tracks.length - 1;
+    loadTrack(prev);
+  }
+
+
+  playBtn.addEventListener("click", togglePlay);
+  nextBtn.addEventListener("click", () => {
+    playNext();
+    if(!isPlaying){
+      isPlaying = true;
+      audio.play();
+      playBtn.textContent = "❚❚";
+    }
+  });
+  prevBtn.addEventListener("click", () => {
+    playPrev();
+    if(!isPlaying){
+      isPlaying = true;
+      audio.play();
+      playBtn.textContent = "❚❚";
+    }
+    
+  });
+
+  
+  playlistEl.addEventListener("click", (e) => {
+    const item = e.target.closest(".track-item");
+    if(!item) return;
+    const index = Number(item.dataset.index);
+    if(index === currentIndex && isPlaying){
+   
+      togglePlay();
+    }else{
+      loadTrack(index);
+      isPlaying = true;
+      audio.play();
+      playBtn.textContent = "❚❚";
+    }
+  });
+
+
+  audio.addEventListener("timeupdate", () => {
+    currentTimeEl.textContent = formatTime(audio.currentTime);
+    if(audio.duration){
+      const percent = (audio.currentTime / audio.duration) * 100;
+      barFill.style.width = `${percent}%`;
+    }
+  });
+
+ 
+  audio.addEventListener("ended", () => {
+    playNext();
+    audio.play();
+  });
+
+
+  seekBar.addEventListener("click", (e) => {
+    const rect = seekBar.getBoundingClientRect();
+    const ratio = (e.clientX - rect.left) / rect.width;
+    if(audio.duration){
+      audio.currentTime = ratio * audio.duration;
+    }
+  });
+
+
+  buildPlaylist();
+  loadTrack(0);
+  document.addEventListener('keydown', (e) => {
+
+  if (e.code === 'Space' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+    e.preventDefault(); 
+    if (playing) {
+      pause();
+    } else {
+      play();
+    }
+  }
+});
+</script>
+</body>
+</html>

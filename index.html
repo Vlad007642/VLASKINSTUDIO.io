@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VLASKIN Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Nosifer&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+  <header>
+    <div class="logo">VLASKIN Studio</div>
+    <nav>
+      <ul>
+       <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="player.html">Player</a></li>
+        <li><a href="login.html">Login</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <canvas id="particles"></canvas>
+    <h1>VLASKIN STUDIO</h1>
+    <p>Студія звукозапису, де музика оживає з комфортом та натхненням.</p>
+    <div class="buttons">
+     <button class="btn" onclick="window.location.href='services.html'">Enter Studio</button>
+  <button class="btn" onclick="window.location.href='player.html'">Listen</button>
+    </div>
+  </section>
+
+  <script>
+    const canvas = document.getElementById("particles");
+  const ctx = canvas.getContext("2d");
+
+  let w, h;
+  let snowflakes = [];
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+
+  window.addEventListener("resize", resize);
+  resize();
+
+ 
+  function createSnowflakes(count = 400) {
+    snowflakes = [];
+    for (let i = 0; i < count; i++) {
+      snowflakes.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 2.5 + 1,
+        speed: Math.random() * 1.5 + 0.5,
+        opacity: Math.random() * 0.6 + 0.4
+      });
+    }
+  }
+
+  createSnowflakes();
+
+  function drawSnow() {
+    ctx.clearRect(0, 0, w, h);
+
+    snowflakes.forEach(flake => {
+      ctx.beginPath();
+      ctx.arc(flake.x, flake.y, flake.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 255, 255, ${flake.opacity})`;
+      ctx.shadowColor = "#ffffff";
+      ctx.shadowBlur = 8;
+      ctx.fill();
+
+      flake.y += flake.speed;
+
+     
+      if (flake.y > h) {
+        flake.y = -10;
+        flake.x = Math.random() * w;
+      }
+    });
+
+    requestAnimationFrame(drawSnow);
+  }
+
+  drawSnow();
+  </script>
+</body>
+</html>
